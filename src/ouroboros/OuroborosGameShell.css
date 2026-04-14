@@ -1,0 +1,327 @@
+/**
+ * Ouroboros — styles for `OuroborosGameShell.jsx` (square grid, reserve HUD, menus, draft toolbar).
+ *
+ * Piece / grid / Hoopsnake win-highlight tokens (`--ouroboros-*`) come from `theme.js`
+ * (`themeToCssVars`) on `.app-root`. Site chrome, panels,
+ * and generic controls live in `index.css`. Other games: `sumo/SumoGameShell.css`,
+ * `admirals/AdmiralsGameShell.css`.
+ */
+
+/**
+ * Top/bottom player bars: Stack Score + clock use shared `player-game-bar-stats` (space-between,
+ * same as Sumo). Piece swatches are squares using board piece tokens.
+ */
+
+.ouroboros-player-game-bar .player-game-piece {
+  border-radius: 3px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+}
+
+.ouroboros-player-game-bar .player-game-piece--white {
+  background: var(--ouroboros-piece-white-fill);
+  border: 1.5px solid var(--ouroboros-piece-white-stroke);
+}
+
+.ouroboros-player-game-bar .player-game-piece--black {
+  background: var(--ouroboros-piece-black-fill);
+  border: 1.5px solid var(--ouroboros-piece-black-stroke);
+}
+
+.ouroboros-board-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  padding: 0.65rem 0.5rem 0.05rem;
+}
+
+/** Sizing lives on the wrap; the grid is absolutely positioned to fill it. */
+.ouroboros-square-grid-wrap {
+  position: relative;
+  width: min(100%, calc(100dvh - 18rem), 720px);
+  max-height: calc(100% - 1.25rem);
+  aspect-ratio: 1;
+  margin: auto;
+}
+
+.ouroboros-square-grid-wrap > .ouroboros-square-grid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  max-height: none;
+}
+
+.ouroboros-square-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ouroboros-board-size, 6), minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--ouroboros-cell-line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--ouroboros-cell-line);
+}
+
+.ouroboros-square-cell {
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: var(--ouroboros-cell-fill);
+  cursor: pointer;
+  position: relative;
+  display: block;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.ouroboros-square-cell:hover {
+  background: var(--ouroboros-cell-hover-fill);
+  border-color: var(--ouroboros-cell-hover-line);
+}
+
+.ouroboros-square-cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.ouroboros-square-cell--target {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 65%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--ouroboros-cell-hover-fill) 55%,
+    transparent
+  );
+}
+
+.ouroboros-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--bg) 35%, transparent);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.ouroboros-action-menu {
+  display: flex;
+  flex-direction: row;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.ouroboros-action-btn {
+  width: 4.25rem;
+  height: 4.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.35rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.ouroboros-action-btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  color: var(--accent);
+}
+
+.ouroboros-action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.ouroboros-action-btn svg {
+  width: 1.65rem;
+  height: 1.65rem;
+  flex-shrink: 0;
+}
+
+.ouroboros-action-btn-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ouroboros-action-btn:hover:not(:disabled) .ouroboros-action-btn-label {
+  color: var(--accent);
+}
+
+/* Cancel + End Turn during Gather/Scatter draft (below white reserve HUD). */
+.ouroboros-draft-toolbar {
+  position: absolute;
+  left: 0.35rem;
+  top: 2.85rem;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.45rem;
+}
+
+/* Extra top offset when two stacked `hex-board-removed-hud` rows sit under the draft anchor. */
+.ouroboros-board-stage--amass-hud .ouroboros-draft-toolbar {
+  top: 5.45rem;
+}
+
+.ouroboros-draft-toolbar-btn {
+  min-width: 5.75rem;
+  text-align: center;
+}
+
+/**
+ * Hoopsnake win (post-game): solid fill, inset so it does not touch the cell edge, noticeably rounded.
+ * Fill: `ouroborosHoopsnakeWinHighlightFill` in Customize. Inset/radius: `OUROBOROS_HOOPSNAKE_WIN_HIGHLIGHT_*`.
+ */
+.ouroboros-hoopsnake-cell-highlight {
+  position: absolute;
+  inset: var(--ouroboros-hoopsnake-win-highlight-inset);
+  z-index: 1;
+  pointer-events: none;
+  border-radius: var(--ouroboros-hoopsnake-win-highlight-radius);
+  background: var(--ouroboros-hoopsnake-win-highlight-fill);
+}
+
+.ouroboros-stack-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ouroboros-piece {
+  position: absolute;
+  left: 50%;
+  width: 44%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+}
+
+.ouroboros-piece--white {
+  background: var(--ouroboros-piece-white-fill);
+  border: 1.5px solid var(--ouroboros-piece-white-stroke);
+}
+
+.ouroboros-piece--black {
+  background: var(--ouroboros-piece-black-fill);
+  border: 1.5px solid var(--ouroboros-piece-black-stroke);
+}
+
+.ouroboros-reserve-pip {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.ouroboros-reserve-pip--white {
+  background: var(--ouroboros-piece-white-fill);
+  border: 1.5px solid var(--ouroboros-piece-white-stroke);
+}
+
+.ouroboros-reserve-pip--black {
+  background: var(--ouroboros-piece-black-fill);
+  border: 1.5px solid var(--ouroboros-piece-black-stroke);
+}
+
+.ouroboros-piece-face-mark {
+  width: 100%;
+  height: 100%;
+}
+
+.ouroboros-piece-face-mark path,
+.ouroboros-piece-face-mark circle {
+  vector-effect: non-scaling-stroke;
+}
+
+.ouroboros-piece-face-mark--white {
+  fill: var(--ouroboros-snake-mark-on-white);
+  stroke: var(--ouroboros-snake-mark-on-white);
+  stroke-width: 1.15;
+}
+
+.ouroboros-piece-face-mark--black {
+  fill: var(--ouroboros-snake-mark-on-black);
+  stroke: var(--ouroboros-snake-mark-on-black);
+  stroke-width: 1.15;
+}
+
+/* Chess labels — color from theme (`ouroborosSquareCoord` → `--ouroboros-square-coord`). */
+.ouroboros-square-coord {
+  position: absolute;
+  bottom: 0.3rem;
+  left: 0.35rem;
+  z-index: 3;
+  font-family: JetBrains Mono, ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ouroboros-square-coord);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ouroboros-board-stage .hex-legend {
+  margin: 0.35rem 0 0;
+}
+
+/**
+ * Amass HUD: stacks **Pieces in Reserve** with **Amass Reserves** (`hex-board-removed-hud`
+ * styling from `index.css`). White = reserve on top; black = Amass above reserve. Corner placement
+ * matches the old single-row `--top` / `--bottom` HUDs.
+ */
+.ouroboros-reserve-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  max-width: min(100%, 22rem);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ouroboros-reserve-stack--top {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.35rem;
+}
+
+.ouroboros-reserve-stack--bottom {
+  position: absolute;
+  bottom: 0.2rem;
+  left: 0.35rem;
+}
+
+.ouroboros-reserve-stack .hex-board-removed-hud {
+  position: static;
+  top: auto;
+  bottom: auto;
+  left: auto;
+}
+

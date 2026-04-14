@@ -1,0 +1,317 @@
+/**
+ * Admirals — styles for `AdmiralsGameShell.jsx`, `AdmiralsHexBoard.jsx`, and Admirals gamelog rows.
+ *
+ * Color tokens (`--admirals-*`) are defined on `.app-root` via `theme.js`. Generic hex board shell
+ * (`hex-board-stage`, `hex-svg`, `hex-coord`, …) and site chrome remain in `index.css`.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Sidebar gamelog — one list item per round (white + black lines).           */
+/* -------------------------------------------------------------------------- */
+
+.gamelog-list--admirals {
+  list-style: none;
+  padding-left: 0;
+}
+
+.gamelog-list--admirals .gamelog-line--admirals-round {
+  padding: 0.28rem 0;
+}
+
+.gamelog-admirals-round-line1 {
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.gamelog-admirals-round-line2 {
+  margin-top: 0.15rem;
+  padding-left: 1.35rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Player bars — admiral glyph in a disc (not the generic `player-game-piece`). */
+/* -------------------------------------------------------------------------- */
+
+.player-game-admiral {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px #00000059;
+  box-sizing: border-box;
+}
+
+.player-game-admiral-anchor {
+  font-size: 12px;
+  line-height: 1;
+  font-family:
+    Segoe UI Symbol,
+    "Noto Sans Symbols 2",
+    DejaVu Sans,
+    DM Sans,
+    system-ui,
+    sans-serif;
+  font-variant-emoji: text;
+  paint-order: stroke fill;
+  pointer-events: none;
+}
+
+.player-game-admiral--sidebar-white {
+  background: radial-gradient(
+    circle at 32% 28%,
+    #fff,
+    #eef1f5 42%,
+    #cfd6df 72%,
+    #9ca6b5
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--admirals-disc-white-stroke) 55%, transparent);
+  color: var(--admirals-glyph-anchor-on-light);
+}
+
+.player-game-admiral--sidebar-black {
+  background: radial-gradient(
+    circle at 32% 28%,
+    var(--admirals-disc-black-3d-hi) 0%,
+    var(--admirals-disc-black-3d-mid) 38%,
+    var(--admirals-disc-black-3d-lo) 70%,
+    var(--admirals-disc-black-3d-deep) 100%
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--admirals-disc-black-stroke) 70%, transparent);
+  color: var(--admirals-glyph-anchor-on-dark);
+}
+
+/* -------------------------------------------------------------------------- */
+/* SVG board — interaction, ships, admirals, selection, combat HUD.           */
+/* -------------------------------------------------------------------------- */
+
+.admirals-hex-svg,
+.admirals-hex-svg text,
+.admirals-admiral,
+.admirals-admiral text,
+.admirals-hud-layer,
+.admirals-hud-layer text {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.admirals-hex-tile {
+  cursor: default;
+}
+
+.admirals-ship {
+  vector-effect: non-scaling-stroke;
+}
+
+.admirals-ship--white {
+  fill: var(--admirals-ship-white-fill);
+  stroke: var(--admirals-ship-white-stroke);
+  stroke-width: 1px;
+}
+
+.admirals-ship--black {
+  fill: var(--admirals-ship-black-fill);
+  stroke: var(--admirals-ship-black-stroke);
+  stroke-width: 1.75px;
+}
+
+.admirals-admiral-disc {
+  vector-effect: non-scaling-stroke;
+}
+
+.admirals-admiral--white .admirals-admiral-disc {
+  stroke: var(--admirals-disc-white-stroke);
+  stroke-width: 1.25px;
+}
+
+.admirals-admiral--black .admirals-admiral-disc {
+  stroke: var(--admirals-disc-black-stroke);
+  stroke-width: 2px;
+}
+
+.admirals-admiral-glyph {
+  font-size: 22px;
+  font-family:
+    Segoe UI Symbol,
+    "Noto Sans Symbols 2",
+    DejaVu Sans,
+    DM Sans,
+    system-ui,
+    sans-serif;
+  font-variant-emoji: text;
+  paint-order: stroke fill;
+  stroke-width: 0.75px;
+  pointer-events: none;
+}
+
+.admirals-admiral-glyph--anchor-on-white {
+  fill: var(--admirals-glyph-anchor-on-light);
+  stroke: color-mix(in srgb, var(--admirals-disc-white-fill) 55%, transparent);
+}
+
+.admirals-admiral-glyph--dead-white {
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  font-family:
+    Arial Black,
+    Segoe UI Black,
+    Helvetica Neue,
+    Impact,
+    Segoe UI Symbol,
+    "Noto Sans Symbols 2",
+    DejaVu Sans,
+    DM Sans,
+    system-ui,
+    sans-serif;
+  fill: var(--admirals-glyph-dead-on-light);
+  stroke: color-mix(
+    in srgb,
+    var(--admirals-glyph-dead-on-light) 35%,
+    var(--admirals-disc-white-fill)
+  );
+  stroke-width: 1.1px;
+}
+
+.admirals-admiral-glyph--anchor-on-black {
+  fill: var(--admirals-glyph-anchor-on-dark);
+  stroke: color-mix(in srgb, var(--admirals-disc-black-fill) 40%, transparent);
+}
+
+.admirals-admiral-glyph--dead-black {
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  font-family:
+    Arial Black,
+    Segoe UI Black,
+    Helvetica Neue,
+    Impact,
+    Segoe UI Symbol,
+    "Noto Sans Symbols 2",
+    DejaVu Sans,
+    DM Sans,
+    system-ui,
+    sans-serif;
+  fill: var(--admirals-glyph-dead-on-dark);
+  stroke: color-mix(
+    in srgb,
+    var(--admirals-glyph-dead-on-dark) 40%,
+    var(--admirals-disc-black-fill)
+  );
+  stroke-width: 1.1px;
+}
+
+.admirals-select-ring {
+  fill: none;
+  stroke: var(--admirals-select-ring-stroke);
+  stroke-width: 3.75px;
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Shell copy, phase hints, game-over banner, float toolbar on the board.     */
+/* -------------------------------------------------------------------------- */
+
+.admirals-side-note {
+  margin: 0.5rem 0 0.85rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.admirals-phase-hint {
+  margin: 0.65rem 0 0;
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.admirals-player-bar-stats {
+  /*
+   * Admirals only shows a clock in this row. Keep an explicit left placeholder and
+   * right clock so the visual alignment matches other games that have score + clock.
+   */
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.admirals-player-bar-spacer {
+  min-width: 6ch;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.admirals-game-over-banner {
+  margin: 0 0 0.85rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.admirals-board-float-controls {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.45rem;
+  max-width: 11rem;
+}
+
+.admirals-float-btn {
+  width: 100%;
+  text-align: center;
+}
+
+.admirals-float-btn--danger {
+  border-color: color-mix(in srgb, #f97316 55%, var(--border));
+  color: color-mix(in srgb, #f97316 95%, var(--text));
+}
+
+.admirals-admiral--selected .admirals-admiral-disc {
+  stroke: var(--admirals-selected-disc-stroke);
+  stroke-width: 4.25px;
+}
+
+.admirals-hud-hit {
+  fill: transparent;
+  stroke: none;
+  pointer-events: auto;
+}
+
+.admirals-hud-dot--safe {
+  fill: var(--admirals-hud-safe-fill);
+  stroke: var(--admirals-hud-safe-stroke);
+  stroke-width: 0.9px;
+  pointer-events: none;
+}
+
+.admirals-hud-fatal-x {
+  fill: var(--admirals-hud-fatal-fill);
+  stroke: var(--admirals-hud-fatal-stroke);
+  stroke-width: 1.15px;
+  font-weight: 900;
+  font-family:
+    Arial Black,
+    Segoe UI Black,
+    Helvetica Neue,
+    Impact,
+    DM Sans,
+    system-ui,
+    sans-serif;
+  letter-spacing: -0.06em;
+  paint-order: stroke fill;
+  pointer-events: none;
+}

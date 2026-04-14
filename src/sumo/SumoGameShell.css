@@ -1,0 +1,99 @@
+/**
+ * Sumo — styles used by `SumoGameShell.jsx` and `SumoHexBoard.jsx` only.
+ *
+ * Shared layout, panels, generic hex scaffolding (`hex-board-stage`, `hex-shape`, `hex-svg`, …),
+ * and global tokens live in `index.css`. Sumo **theme** overrides (`--sumo-*`, `--last-placed-*`)
+ * come from `theme.js` on `.app-root`.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* “Pieces Removed” HUD — accent when the last move caused a push-off (Sumo). */
+/* -------------------------------------------------------------------------- */
+
+.hex-board-removed-hud--push-off-accent {
+  border-color: var(--sumo-visual-accent);
+  background: color-mix(
+    in srgb,
+    var(--sumo-visual-accent) 18%,
+    var(--surface) 82%
+  );
+  box-shadow:
+    0 0 0 2px var(--sumo-visual-accent-ring),
+    0 2px 14px color-mix(in srgb, var(--sumo-visual-accent) 28%, transparent);
+}
+
+.hex-board-removed-hud--push-off-accent .hex-board-removed-count {
+  color: var(--sumo-visual-accent);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Last placement ring & push-off arrows (orange accent).                       */
+/* -------------------------------------------------------------------------- */
+
+.hex-last-placed-ring {
+  fill: none;
+  stroke: var(--sumo-visual-accent);
+  stroke-width: 4;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px var(--last-placed-glow));
+}
+
+.hex-push-arrow {
+  fill: var(--sumo-visual-accent);
+  stroke: color-mix(in srgb, var(--sumo-visual-accent) 38%, var(--bg));
+  stroke-width: 0.45;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Stone stacks & pin numerals on hexes.                                      */
+/* -------------------------------------------------------------------------- */
+
+.hex-stone-stack circle {
+  vector-effect: non-scaling-stroke;
+}
+
+.hex-pin-numeral {
+  font-family: DM Sans, system-ui, sans-serif;
+  font-weight: 900;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
+.hex-pin-numeral--white {
+  fill: #0f172a;
+  stroke: #0a0f18;
+  stroke-width: 0.55px;
+  paint-order: stroke fill;
+}
+
+.hex-pin-numeral--black {
+  fill: #f8fafc;
+  stroke: #e2e8f0;
+  stroke-width: 0.5px;
+  paint-order: stroke fill;
+}
+
+.hex-pin-numeral.hex-pin-numeral--visual-aid {
+  fill: var(--sumo-visual-accent);
+  paint-order: stroke fill;
+  stroke: color-mix(in srgb, var(--bg) 50%, transparent);
+  stroke-width: 0.5px;
+  filter: drop-shadow(0 0 5px var(--sumo-visual-accent-ring));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Player bars — score ahead of opponent (total pins).                          */
+/* -------------------------------------------------------------------------- */
+
+.player-game-score-line.player-game-score-line--visual-aid {
+  color: var(--sumo-score-ahead-marker);
+  text-shadow: 0 0 12px var(--sumo-score-ahead-glow);
+}
+
+.player-game-exclaim {
+  font-weight: 900;
+  color: var(--sumo-score-ahead-marker);
+  text-shadow: 0 0 12px var(--sumo-score-ahead-glow);
+}

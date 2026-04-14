@@ -1,0 +1,216 @@
+/**
+ * Mimoveyumove board scaffold, adapted from Ouroboros square-grid layout.
+ */
+
+.mimo-board-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  padding: 0.65rem 0.5rem 0.05rem;
+}
+
+.mimo-square-grid-wrap {
+  position: relative;
+  width: min(100%, calc(100dvh - 18rem), 720px);
+  max-height: calc(100% - 1.25rem);
+  aspect-ratio: 1;
+  margin: auto;
+}
+
+.mimo-square-grid-wrap > .mimo-square-grid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  max-height: none;
+}
+
+.mimo-square-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--mimo-board-size, 10), minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--mimo-cell-line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--mimo-cell-line);
+}
+
+.mimo-square-cell {
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: var(--mimo-cell-fill);
+  cursor: default;
+  position: relative;
+  display: block;
+}
+
+.mimo-square-cell:not(:disabled) {
+  cursor: pointer;
+}
+
+.mimo-square-cell--edge {
+  background: var(--mimo-cell-edge-fill);
+}
+
+.mimo-square-cell:disabled {
+  opacity: 1;
+}
+
+.mimo-square-cell--selected {
+  box-shadow: inset 0 0 0 3px var(--mimo-selected-ring);
+}
+
+.mimo-square-cell--hint-migo {
+  background: var(--mimo-cell-hint-fill);
+}
+
+.mimo-square-cell--edge.mimo-square-cell--hint-migo {
+  background: var(--mimo-cell-edge-hint-fill);
+}
+
+/*
+ * Spawner hint uses a stronger channel than migo hint so edge spawners read as
+ * immediately actionable anchors at turn start.
+ */
+.mimo-square-cell--hint-spawner {
+  background: var(--mimo-cell-spawner-hint-fill);
+}
+
+.mimo-square-cell--edge.mimo-square-cell--hint-spawner {
+  background: var(--mimo-cell-edge-spawner-hint-fill);
+}
+
+.mimo-square-cell--target {
+  background: var(--mimo-cell-target-fill);
+}
+
+.mimo-square-cell--edge.mimo-square-cell--target {
+  background: var(--mimo-cell-edge-target-fill);
+}
+
+/* Igo end-state overlay: persistent, under pieces, above cell fill. */
+.mimo-igo-cell-highlight {
+  position: absolute;
+  inset: 10%;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 10px;
+  background: var(--mimo-igo-highlight-fill);
+}
+
+.mimo-piece {
+  position: absolute;
+  inset: 16%;
+  z-index: 3;
+  border-radius: 50%;
+  box-shadow:
+    0 4px 10px var(--mimo-piece-shadow-strong),
+    0 1px 2px var(--mimo-piece-shadow-soft);
+  display: grid;
+  place-items: center;
+}
+
+.mimo-piece--white {
+  background: radial-gradient(
+    circle at 32% 28%,
+    var(--mimo-piece-white-hi),
+    var(--mimo-piece-white-mid) 38%,
+    var(--mimo-piece-white-lo) 72%,
+    var(--mimo-piece-white-deep)
+  );
+  border: 1px solid var(--mimo-piece-white-stroke);
+}
+
+.mimo-piece--black {
+  background: radial-gradient(
+    circle at 32% 28%,
+    var(--mimo-piece-black-hi),
+    var(--mimo-piece-black-mid) 38%,
+    var(--mimo-piece-black-lo) 72%,
+    var(--mimo-piece-black-deep)
+  );
+  border: 1px solid var(--mimo-piece-black-stroke);
+}
+
+.mimo-piece-mark {
+  pointer-events: none;
+}
+
+.mimo-piece-mark--yugo {
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--mimo-yugo-dot-fill);
+  box-shadow: 0 0 0 1px var(--mimo-yugo-dot-ring);
+}
+
+.mimo-piece-mark--spawner {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: clamp(18px, 2.8vw, 34px);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.mimo-piece-mark--spawner-dark {
+  color: var(--mimo-spawner-mark-dark);
+}
+
+.mimo-piece-mark--spawner-light {
+  color: var(--mimo-spawner-mark-light);
+}
+
+.mimo-square-coord {
+  position: absolute;
+  left: 0.35rem;
+  bottom: 0.3rem;
+  z-index: 1;
+  font-family: JetBrains Mono, ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--mimo-coord-interior);
+  opacity: 0.72;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mimo-square-coord--edge {
+  color: var(--mimo-coord-edge);
+  opacity: 0.68;
+}
+
+/* LOS targets are interactive intent markers; lift coord contrast to match highlight state. */
+.mimo-square-cell--target .mimo-square-coord {
+  color: var(--mimo-coord-target);
+  opacity: 0.95;
+}
+
+.mimo-board-stage .hex-legend {
+  margin: 0.35rem 0 0;
+}
+
+.mimo-board-float-controls {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.45rem;
+}
+
+.mimo-float-btn {
+  min-width: 5.5rem;
+  text-align: center;
+}

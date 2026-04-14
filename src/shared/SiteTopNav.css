@@ -1,0 +1,83 @@
+/* Site-wide header actions (Host / Join / Spectate / … / Settings on game routes). `SiteTopNav.jsx`. */
+/* Game shells: brand picker + `SiteHomepageLink` share the left cluster. */
+
+.site-header-start {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.site-header-start .brand-mega {
+  align-self: center;
+}
+
+/* Do not set `color: inherit` here — it would override `.site-top-nav__btn`’s `var(--muted)`. */
+a.site-homepage-link {
+  text-decoration: none;
+}
+
+.site-top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.28rem;
+  max-width: 100%;
+}
+
+.site-top-nav__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  white-space: nowrap;
+}
+
+.site-top-nav__btn:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: var(--surface-2);
+}
+
+.site-top-nav__btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.site-top-nav__icon {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  display: grid;
+  place-items: center;
+}
+
+.site-top-nav__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.site-top-nav__label {
+  line-height: 1.2;
+}
+
+/* Parenthesized counters — slightly de-emphasized but same row */
+.site-top-nav__meta {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.site-top-nav__btn:hover .site-top-nav__meta {
+  color: color-mix(in srgb, var(--muted) 70%, var(--text));
+}
