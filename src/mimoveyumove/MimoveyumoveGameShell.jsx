@@ -34,6 +34,7 @@ import {
   serializeMimoveGamelog,
   parseMimoveGamelogJson,
   replayMimoveGameForImport,
+  replayMimoveStateAtPlies,
 } from "./mimoveyumoveGamelog.js";
 import {
   MIMO_PIECE_WHITE_MIGO,
@@ -204,8 +205,20 @@ export function MimoveyumoveGameShell({ config }) {
     );
   }, [gamelogReview, moveHistory.length, hasGamelogTerminalStep]);
 
-  const displayTurn = turn;
-  const yugoScores = useMemo(() => computeMimoYugoScores(board), [board]);
+  /**
+   * Review mode replays from the opening position at the selected ply.
+   * This mirrors the board-scrub behavior already used by the other games.
+   */
+  const replayAtReview = useMemo(() => {
+    if (!gamelogReview) return null;
+    return replayMimoveStateAtPlies(moveHistory, cells, reviewPliesClamped);
+  }, [gamelogReview, moveHistory, cells, reviewPliesClamped]);
+  const displayBoard = replayAtReview ? replayAtReview.board : board;
+  const displayTurn = replayAtReview ? replayAtReview.turn : turn;
+  const yugoScores = useMemo(
+    () => computeMimoYugoScores(displayBoard),
+    [displayBoard]
+  );
   /**
    * Post-game Igo overlay. Keep all exact-4 Yugo lines highlighted, including
    * multi-line outcomes, so the decisive shape remains visible.
@@ -213,8 +226,18 @@ export function MimoveyumoveGameShell({ config }) {
   const igoHighlightCoords = useMemo(() => {
     if (termination !== "igo_win") return new Set();
     if (naturalOutcome !== "white" && naturalOutcome !== "black") return new Set();
-    return collectIgoHighlightCoords(board, naturalOutcome);
-  }, [termination, naturalOutcome, board]);
+    const atFinalBoardOfFinishedMatch =
+      !inGamelogReview || reviewPliesClamped === moveHistory.length;
+    if (!atFinalBoardOfFinishedMatch) return new Set();
+    return collectIgoHighlightCoords(displayBoard, naturalOutcome);
+  }, [
+    termination,
+    naturalOutcome,
+    inGamelogReview,
+    reviewPliesClamped,
+    moveHistory.length,
+    displayBoard,
+  ]);
 
   const winner = useMemo(() => {
     if (inGamelogReview && gamelogReview) {
@@ -888,7 +911,7 @@ export function MimoveyumoveGameShell({ config }) {
                   >
                     {cells.map((cell) => (
                       (() => {
-                        const piece = normalizeMimoPiece(board[cell.label]);
+                        const piece = normalizeMimoPiece(displayBoard[cell.label]);
                         const pieceColor = mimoPieceColor(piece);
                         const pieceRole = mimoPieceRole(piece);
                         const isWhitePiece =
