@@ -12,7 +12,22 @@ import {
 } from "./mimoveyumoveLogic.js";
 
 export const MIMOVE_GAMELOG_FORMAT_VERSION = 1;
-export const MIMOVE_DEFAULT_BOARD_SIZE = "10x10";
+/**
+ * Public rules board size (playable interior). Physical grid remains 10x10 with edge spawners.
+ * Keep this as `8x8` in exported logs to match the game settings UI.
+ */
+export const MIMOVE_DEFAULT_BOARD_SIZE = "8x8";
+
+/**
+ * Accept legacy logs that stored the physical grid label.
+ * @param {unknown} raw
+ * @returns {string}
+ */
+function normalizeMimoveBoardSize(raw) {
+  if (typeof raw !== "string" || !raw.trim()) return MIMOVE_DEFAULT_BOARD_SIZE;
+  const trimmed = raw.trim();
+  return trimmed === "10x10" ? "8x8" : trimmed;
+}
 
 /**
  * @param {string} move
@@ -98,13 +113,13 @@ export function parseMimoveGamelogJson(text) {
   if (!Array.isArray(data.moves)) {
     throw new Error("Missing moves array.");
   }
-  const boardSize =
+  const boardSize = normalizeMimoveBoardSize(
     data.settings != null &&
-    typeof data.settings === "object" &&
-    typeof data.settings.boardSize === "string" &&
-    data.settings.boardSize.trim()
+      typeof data.settings === "object" &&
+      "boardSize" in data.settings
       ? data.settings.boardSize
-      : MIMOVE_DEFAULT_BOARD_SIZE;
+      : undefined
+  );
   const term = data.termination;
   if (
     term != null &&
@@ -221,7 +236,11 @@ export function replayMimoveGameForImport(moves, cells, importedTermination) {
     if (!legalTargets.has(parsed.target)) {
       throw new Error(`Illegal move at step ${i + 1}: ${move}.`);
     }
-    const actionResult = applyMimoAction(board, parsed, turn);
+    const actionResult = applyMimoAction(
+      board,
+      { source: parsed.source, target: parsed.target, mode: parsed.kind },
+      turn
+    );
     board = actionResult.board;
     if (parsed.yugoLineCount !== actionResult.yugoLineCount) {
       throw new Error(`Yugo star marker mismatch at step ${i + 1}: ${move}.`);

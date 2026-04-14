@@ -59,9 +59,12 @@ import {
 } from "./mimoveyumoveLogic.js";
 import "./MimoveyumoveGameShell.css";
 
-const MIMO_BOARD_SIZE_OPTIONS = [{ value: "10x10", label: "8x8" }];
+const MIMO_BOARD_SIZE_OPTIONS = [{ value: "8x8", label: "8x8" }];
 const MIMO_BOARD_SIZE_CONFIG = {
-  "10x10": { size: 10, caption: "Stardard Board: 8x8" },
+  // `8x8` is the playable interior; physical coordinates remain 10x10 with edge spawners.
+  "8x8": { size: 10, caption: "Standard Board: 8x8" },
+  // Backward compatibility for older imports that saved the physical-grid label.
+  "10x10": { size: 10, caption: "Standard Board: 8x8" },
 };
 const MIMO_BOT_OPTIONS = [];
 const CLOCK_INFINITE_DISPLAY = "99:99";
@@ -96,9 +99,9 @@ function buildSquareCells(boardSize) {
 /** @param {{ config: import("../shared/gameRegistry.js").SiteGameConfig }} props */
 export function MimoveyumoveGameShell({ config }) {
   useSyncGameViewportHeight();
-  const [boardSize, setBoardSize] = useState("10x10");
+  const [boardSize, setBoardSize] = useState("8x8");
   const boardSizeConfig =
-    MIMO_BOARD_SIZE_CONFIG[boardSize] ?? MIMO_BOARD_SIZE_CONFIG["10x10"];
+    MIMO_BOARD_SIZE_CONFIG[boardSize] ?? MIMO_BOARD_SIZE_CONFIG["8x8"];
   const boardSizeN = boardSizeConfig.size;
   const cells = useMemo(() => buildSquareCells(boardSizeN), [boardSizeN]);
 
@@ -128,7 +131,7 @@ export function MimoveyumoveGameShell({ config }) {
 
   const [practiceSessionActive, setPracticeSessionActive] = useState(false);
   const [gameSettingsOpen, setGameSettingsOpen] = useState(false);
-  const [draftBoardSize, setDraftBoardSize] = useState("10x10");
+  const [draftBoardSize, setDraftBoardSize] = useState("8x8");
 
   const [challengeAiOpen, setChallengeAiOpen] = useState(false);
   const [selectedAiBotId, setSelectedAiBotId] = useState("");
