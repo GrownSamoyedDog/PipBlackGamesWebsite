@@ -12,7 +12,7 @@ import { SITE_GAMES } from "./shared/gameRegistry.js";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         {SITE_GAMES.map((g) => (
